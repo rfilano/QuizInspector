@@ -3,7 +3,6 @@
 #https://www.youtube.com/watch?v=62JZImLe6Qw
 import os			    # for magick and tesseract commands
 import time			  # for epoch time
-import calendar 	# for epoch time
 from PyPDF2 import PdfMerger
 
 dir_files = [f for f in os.listdir(".") if os.path.isfile(os.path.join(".", f))]
