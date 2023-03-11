@@ -3,13 +3,15 @@
 #https://www.youtube.com/watch?v=62JZImLe6Qw
 import os			    # for magick and tesseract commands
 import time			  # for epoch time
-import calendar 	# for epoch time
+import re
 from PyPDF2 import PdfMerger
+from pdfminer.high_level import extract_text
 
 dir_files = [f for f in os.listdir(".") if os.path.isfile(os.path.join(".", f))]
 epoch_time = int(time.time())
 formatted_time = time.strftime('%m_%d_%Y', time.localtime(epoch_time))
 print(dir_files)
+allCombined = []
 
 for file in dir_files: # look at every file in the current directory
 	if file.endswith('.pdf'): # if it is a PDF, use it
@@ -43,4 +45,10 @@ for file in dir_files: # look at every file in the current directory
 				merger.append(folder + '/' + pdf)
 
 		merger.write(folder + '-ocr-combined.pdf')
+		allCombined.append(folder + '-ocr-combined.pdf')
 		merger.close()
+
+		for f in allCombined:
+			name = f[:-17] + ".txt"
+			file_object = open(name, "w+")
+			file_object.write(extract_text(f))
