@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-import pytesseract  
+import pytesseract
 import fitz
 
 pdf_files = [f for f in os.listdir(
@@ -20,8 +20,8 @@ for file in pdf_files:  # look at every file in the current directory
 png_files = [f for f in os.listdir(
     ".") if os.path.isfile(os.path.join(".", f))]
 for file in png_files:
-     if file.endswith('.png'):  # if it is a PDF, use it
+    if file.endswith('.png'):  # if it is a PDF, use it
         print(file[:-4] + " as string: ")
         print(pytesseract.image_to_string(Image.open(file[:-4] + '.png')))
-        open(file[:-4] + ".txt", "w").write(pytesseract.image_to_string(Image.open(file[:-4] + '.png')))
-
+        open(file[:-4] + ".txt",
+             "w").write(pytesseract.image_to_string(Image.open(file[:-4] + '.png')))
