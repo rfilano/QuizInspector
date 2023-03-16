@@ -1,0 +1,4 @@
+Python
+Pillow
+Pytesserat
+PyMuPDF
