@@ -1,52 +1,47 @@
-import openai
-from PIL import Image
-import argparse
-import pytesseract
-import fitz
+from bottle import route, run, get, post, request, redirect
+from conversions import ai_call
+import os
 
-with open('secrets.txt') as f:
-    openai.api_key = f.read()
-
-
-def pdf_to_image(file):
-    doc = fitz.open(file)
-    i = 0
-    output_pages = []
-    for page in doc:
-        i += 1
-        pix = page.get_pixmap()
-        output = file[:-4] + "_page_" + i.__str__() + ".png"
-        pix.save(output)
-        output_pages.append(output)
-    doc.close()
-    return output_pages
+template = """<html>
+<head><title>Quiz Inspector</title></head>
+<body>
+<h1>Upload a file</h1>
+<form method="POST" enctype="multipart/form-data" action="/response">
+<label>Audience:</label> <input type="text" name="audience" value=""><br>
+<label>API Key:</label> <input type="text" name="api_key" value=""><br>
+<label> Test PDF: </label><input type="file" name="upload"/><br>
+<input type="submit" value="Submit" />
+</form>
+</body>
+</html>"""
 
 
-def images_to_text(pages):
-    pdf_text = ""
-    for page in pages:
-        pdf_text = pdf_text + pytesseract.image_to_string(Image.open(page))
-    return pdf_text
+def response_template(path, audience, api_key):
+    redirect = '/upload'
+    return (f"<html> <head><title>Quiz Inspector</title></head><h>"
+            f" {ai_call(pdf_path=path, audience=audience, api_key=api_key)}</h><br/>"
+            f"<input type='button' onclick=\"window.location.href='{redirect}'\" value='Back'/>")
 
 
-def gpt_call(audience, pdf_text):
-    prompt = "Here's a test for " + audience + \
-        " students. Please provide sample answers for a great student, an average student, and a poor student. Evaluate the difficulty and divergence of each question.\n" + pdf_text
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": "test"}],
-        temperature=0
-    )
-    return (response["choices"][0]["message"]["content"])
+@route('/upload')
+def startpage():
+    return template
 
 
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("pdf_name")
-    args = parser.parse_args()
-    pngs = pdf_to_image(args.pdf_name)
-    pdf_text = images_to_text(pngs)
-    print("Please format your response as 'Grade Level Subject'\n For example: 3rd grade math.")
-    audience = input("What is the target audience? ")
-    print(gpt_call(audience, pdf_text))
+@post('/response')
+def upload():
+    audience = request.POST['audience']
+    api_key = request.POST['api_key']
+    pdf_file = request.files.get('upload')
+    name, ext = os.path.splitext(pdf_file.raw_filename)
+    if audience and api_key and pdf_file:
+        if ext not in ('.pdf'):
+            return "This file extenstion is not supported. Please upload a PDF file."
+        else:
+            save_path = os.curdir+'/tempPDFS/'
+            pdf_file.save(save_path)
+            pdf_path = save_path + pdf_file.raw_filename
+            return response_template(path=pdf_path, audience=audience, api_key=api_key)
+    else:
+        return "Please fill in all fields to proceed." 
+run(host='localhost', port=8080, debug=True)
