@@ -2,21 +2,20 @@ import openai
 from PIL import Image
 import pytesseract
 import fitz
+import io
 
 #with open('secrets.txt') as f:
 #    openai.api_key = f.read()
 
 
-def pdf_to_image(filepath):
-    doc = fitz.open(filepath)
+def pdf_to_image(file_bits):
+    doc = fitz.open("pdf", file_bits)
     i = 0
     output_pages = []
     for page in doc:
         i += 1
         pix = page.get_pixmap()
-        output = filepath[:-4] + "_page_" + i.__str__() + ".png"
-        pix.save(output)
-        output_pages.append(output)
+        output_pages.append(pix.tobytes(output="png"))
     doc.close()
     return output_pages
 
@@ -24,7 +23,7 @@ def pdf_to_image(filepath):
 def images_to_text(pages):
     pdf_text = ""
     for page in pages:
-        pdf_text = pdf_text + pytesseract.image_to_string(Image.open(page))
+        pdf_text = pdf_text + pytesseract.image_to_string(Image.open(io.BytesIO(page)))
     return pdf_text
 
 
