@@ -54,8 +54,17 @@ def gpt_call(audience, pdf_text, flags):
     )
     return (response["choices"][0]["message"]["content"])
 
-def ai_call(pdf_path, audience,api_key, flags):
+def ai_call(pdf_path, audience,api_key, flags, is_PDF):
     openai.api_key = api_key
-    pngs = pdf_to_image(pdf_path)
-    pdf_text = images_to_text(pngs)
+    if(is_PDF):
+        pngs = pdf_to_image(pdf_path)
+        pdf_text = images_to_text(pngs)
+    else:
+        pdf_text = images_to_text([pdf_path])
     return(gpt_call(audience, pdf_text, flags))
+
+#Test
+if __name__ == '__main__':
+     with open('secrets.txt') as secrets_file:
+        openai.api_key = secrets_file.read()
+     print(gpt_call('2nd grade math', 'add two and two to make five', []))

@@ -1,13 +1,7 @@
 from bottle import route, run, post, request, redirect, static_file, template
 from conversions import ai_call
 import os
-
-
-def response_template(path, audience, api_key, flags):
-    redirect = '/'
-    return (f"<html> <head><title>Quiz Inspector</title></head>"
-            f" <pre>{ai_call(pdf_path=path, audience=audience, api_key=api_key, flags=flags)}</pre></h><br/>"
-            f"<input type='button' onclick=\"window.location.href='{redirect}'\" value='Back'/>")
+    
 
 @route('/')
 def startpage():
@@ -32,10 +26,7 @@ def upload():
     flags.append(checkbox5)
     name, ext = os.path.splitext(pdf_file.raw_filename)
     if audience and api_key and pdf_file:
-        if ext not in ('.pdf'):
-            return "This file extenstion is not supported. Please upload a PDF file."
-        else:
-            return response_template(path=pdf_file.file.read(), audience=audience, api_key=api_key, flags=flags)
+        return ai_call(pdf_path=pdf_file.file.read(), audience=audience, api_key=api_key, flags=flags, is_PDF = ext in ('.pdf',))
     else:
         return "Please fill in all fields to proceed."
 
