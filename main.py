@@ -4,13 +4,12 @@ import os
 
 
 def response_template(path, audience, api_key, flags):
-    redirect = '/upload'
+    redirect = '/'
     return (f"<html> <head><title>Quiz Inspector</title></head>"
             f" <pre>{ai_call(pdf_path=path, audience=audience, api_key=api_key, flags=flags)}</pre></h><br/>"
             f"<input type='button' onclick=\"window.location.href='{redirect}'\" value='Back'/>")
 
 @route('/')
-@route('/upload')
 def startpage():
     return template('upload.html', root='.', checkbox1=True, checkbox2 = True, checkbox3=True, checkbox4=True, checkbox5=True)
 
