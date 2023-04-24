@@ -7,7 +7,7 @@
     <h2>Upload a file</h2>
     <form method="POST" enctype="multipart/form-data" action="/response">
       <label>Audience:</label>
-      <input type="text" name="audience" value="" /><br /><br />
+      <input type="text" name="audience"  value="" /><br /><br />
       <label>API Key:</label>
       <input type="text" name="api_key" value="" /><br /><br />
       <label> Test PDF: </label><input type="file" name="upload" /><br /><br />
@@ -17,18 +17,35 @@
       </p>
       <br />
       <label>Prompt Customization - Select your options below:</label><br />
-      <input type="checkbox" name="checkbox1" value="g" {{"checked" if checkbox1 else ""}}/>
+      <input type="checkbox" name="checkbox1" value="g"/>
       <label for="checkbox1">Sample Answers: Good Student</label
       ><br />
-      <input type="checkbox" name="checkbox2" value="a" {{"checked" if checkbox1 else ""}}/>
+      <input type="checkbox" name="checkbox2" value="a"/>
       <label for="checkbox2">Sample Answers: Average Student</label><br />
-      <input type="checkbox" name="checkbox3" value="p" {{"checked" if checkbox1 else ""}}/>
+      <input type="checkbox" name="checkbox3" value="p"/>
       <label for="checkbox3">Sample Answers: Poor Student</label><br />
-      <input type="checkbox" name="checkbox4" value="d" {{"checked" if checkbox1 else ""}}/>
+      <input type="checkbox" name="checkbox4" value="d"/>
       <label for="checkbox4">Divergence of Each Question</label><br />
-      <input type="checkbox" name="checkbox5" value="r" {{"checked" if checkbox1 else ""}}/>
+      <input type="checkbox" name="checkbox5" value="r"/>
       <label for="checkbox5">Relevence to Audience</label><br />
       <input type="submit" value="Submit" />
     </form>
+
+    <script>
+      document.getElementsByName('audience')[0].onchange = (evt) => {
+        localStorage.setItem('audience', evt.target.value);
+      };
+      const audience = localStorage.getItem('audience');
+      if (audience != null) {
+        document.getElementsByName('audience')[0].value = audience;
+      }
+      document.getElementsByName('api_key')[0].onchange = (evt) => {
+        localStorage.setItem('api_key', evt.target.value);
+      };
+      const api_key = localStorage.getItem('api_key');
+      if (api_key != null) {
+        document.getElementsByName('api_key')[0].value = api_key;
+      }
+    </script>
   </body>
 </html>

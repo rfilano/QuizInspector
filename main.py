@@ -1,4 +1,4 @@
-from bottle import route, run, post, request, redirect, static_file
+from bottle import route, run, post, request, redirect, static_file, template
 from conversions import ai_call
 import os
 
@@ -12,7 +12,7 @@ def response_template(path, audience, api_key, flags):
 @route('/')
 @route('/upload')
 def startpage():
-    return static_file('upload.html', root='.')
+    return template('upload.html', root='.', checkbox1=True, checkbox2 = True, checkbox3=True, checkbox4=True, checkbox5=True)
 
 
 @post('/response')
@@ -41,4 +41,4 @@ def upload():
         return "Please fill in all fields to proceed."
 
 
-run(host='localhost', port=8080, debug=True)
+run(host='localhost', port=8080, debug=True, reloader=True)
