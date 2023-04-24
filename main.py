@@ -1,47 +1,44 @@
-from bottle import route, run, get, post, request, redirect
+from bottle import route, run, post, request, redirect, static_file
 from conversions import ai_call
 import os
 
-template = """<html>
-<head><title>Quiz Inspector</title></head>
-<body>
-<h1>Upload a file</h1>
-<form method="POST" enctype="multipart/form-data" action="/response">
-<label>Audience:</label> <input type="text" name="audience" value=""><br>
-<label>API Key:</label> <input type="text" name="api_key" value=""><br>
-<label> Test PDF: </label><input type="file" name="upload"/><br>
-<input type="submit" value="Submit" />
-</form>
-</body>
-</html>"""
 
-
-def response_template(path, audience, api_key):
+def response_template(path, audience, api_key, flags):
     redirect = '/upload'
-    return (f"<html> <head><title>Quiz Inspector</title></head><h>"
-            f" <pre>{ai_call(pdf_path=path, audience=audience, api_key=api_key)}</pre></h><br/>"
+    return (f"<html> <head><title>Quiz Inspector</title></head>"
+            f" <pre>{ai_call(pdf_path=path, audience=audience, api_key=api_key, flags=flags)}</pre></h><br/>"
             f"<input type='button' onclick=\"window.location.href='{redirect}'\" value='Back'/>")
 
-
+@route('/')
 @route('/upload')
 def startpage():
-    return template
+    return static_file('upload.html', root='.')
 
 
 @post('/response')
 def upload():
+    flags = []
     audience = request.POST['audience']
     api_key = request.POST['api_key']
     pdf_file = request.files.get('upload')
+    checkbox1 = request.forms.get("checkbox1")
+    checkbox2 = request.forms.get("checkbox2")
+    checkbox3 = request.forms.get("checkbox3")
+    checkbox4 = request.forms.get("checkbox4")
+    checkbox5 = request.forms.get("checkbox5")
+    flags.append(checkbox1)
+    flags.append(checkbox2)
+    flags.append(checkbox3)
+    flags.append(checkbox4)
+    flags.append(checkbox5)
     name, ext = os.path.splitext(pdf_file.raw_filename)
     if audience and api_key and pdf_file:
         if ext not in ('.pdf'):
             return "This file extenstion is not supported. Please upload a PDF file."
         else:
-            #save_path = os.curdir+'/tempPDFS/'
-            #pdf_file.save(save_path)
-            #pdf_path = save_path + pdf_file.raw_filename
-            return response_template(path=pdf_file.file.read(), audience=audience, api_key=api_key)
+            return response_template(path=pdf_file.file.read(), audience=audience, api_key=api_key, flags=flags)
     else:
-        return "Please fill in all fields to proceed." 
+        return "Please fill in all fields to proceed."
+
+
 run(host='localhost', port=8080, debug=True)
