@@ -7,7 +7,6 @@ import os
 def startpage():
     return template('upload.html', root='.', checkbox1=True, checkbox2 = True, checkbox3=True, checkbox4=True, checkbox5=True)
 
-
 @post('/response')
 def upload():
     flags = []

@@ -28,42 +28,61 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <h1>Quiz Inspector</h1>
-  <body>
-    <h2>Upload a file</h2>
+  <body style="background-color: aliceblue;">
+    <img
+    src="./css_images/QuizInspectorLogo.png"
+    alt="Qiuz Inspector"
+    style="
+      width: 450;
+      height: 150;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    "
+  />
+    <h3 style="text-align: center;">Welcome to Quiz Inspector!</h3>
+    <p style="text-align: center;">
+      This application provides feedback on assessments for all audiences.
+      Below, please submit the audience for the exam (grade level and subject),
+      your Open-AI api-key, and an image or PDF of your exam. </br>When you click
+      submit, you will receive suggestions on how to improve the exam and
+      feedback on the difficulty of each question. If you would like more
+      information, use the checkboxes below!
+    </p>
     <form
       method="POST"
       enctype="multipart/form-data"
       action="/response"
       id="upload_form"
+      style="background-color:white; display: table; border: solid 5px #ffca18;
+      padding: 2%; margin: 0px auto 0px auto;"
     >
-      <label>Audience:</label>
+      <label>Audience:</label>&nbsp;
       <input type="text" name="audience" value="" /><br /><br />
-      <label>API Key:</label>
+      <label>API Key:</label>&nbsp;
       <input type="text" name="api_key" value="" /><br /><br />
-      <label> Test PDF: </label><input type="file" name="upload" /><br /><br />
-      <p>
-        The default prompt analyzes the difficulty of each problem for the
-        audience.
-      </p>
+      <label>File Upload:</label>&nbsp;
+      <input type="file" name="upload" /><br /><br />
       <br />
       <label>Prompt Customization - Select your options below:</label><br />
-      <input type="checkbox" name="checkbox1" value="g" />
+      <input type="checkbox" name="checkbox1" value="g" /> &nbsp;
       <label for="checkbox1">Sample Answers: Good Student</label><br />
-      <input type="checkbox" name="checkbox2" value="a" />
+      <input type="checkbox" name="checkbox2" value="a" /> &nbsp;
       <label for="checkbox2">Sample Answers: Average Student</label><br />
-      <input type="checkbox" name="checkbox3" value="p" />
+      <input type="checkbox" name="checkbox3" value="p" /> &nbsp;
       <label for="checkbox3">Sample Answers: Poor Student</label><br />
-      <input type="checkbox" name="checkbox4" value="d" />
+      <input type="checkbox" name="checkbox4" value="d" /> &nbsp;
       <label for="checkbox4">Divergence of Each Question</label><br />
-      <input type="checkbox" name="checkbox5" value="r" />
+      <input type="checkbox" name="checkbox5" value="r" /> &nbsp;
       <label for="checkbox5">Relevence to Audience</label><br />
-      <input type="submit" id="submit" value="Submit" />
+      <input type="submit" id="submit" value="Submit" style="background-color: pink;"/> 
       <div class="spinner-border text-dark" role="status" id="spinner">
         <span class="sr-only">Loading...</span>
       </div>
-    </form>
-    <p id="form_output"></p>
+    </form><br/>
+    <p id="form_output" style="background-color:white; display: table; 
+    padding: 2%; margin: 0px auto 0px auto; border: solid 5px #ffca18;"></p>
+    
 
     <script>
       document.getElementsByName("audience")[0].onchange = (evt) => {
@@ -82,6 +101,8 @@
       }
       $(function () {
         $("#spinner").hide();
+        $('#form_output').hide();
+        $('#clear').hide();
         $("#upload_form").ajaxForm({
           beforeSubmit: () => {
             $("#submit").prop("disabled", true);
@@ -97,6 +118,7 @@
           success: function (submit_response) {
             console.log(submit_response);
             document.getElementById("form_output").innerText = submit_response;
+            $('#form_output').show();
             $("#submit").prop("disabled", false);
             $("#spinner").hide();
           },
