@@ -47,11 +47,14 @@ def gpt_call(audience, pdf_text, flags):
         if len(sample_students) == 3:
                 sample_student_prompt = sample_student_prompt + sample_students[0] + ", " + sample_students[1] + ",and " + sample_students[2] + "."
     prompt = prompt + sample_student_prompt + " Evaluate the difficulty each question and provide suggestions.\n" + pdf_text
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0
-    )
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0
+        )
+    except Exception as e:
+        return f"There was an error with ChatGPT: {e}"
     return (response["choices"][0]["message"]["content"])
 
 def ai_call(pdf_path, audience,api_key, flags, is_PDF):
