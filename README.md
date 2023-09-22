@@ -5,8 +5,8 @@ This program scans a PDF and sends the PDF contents to OpenAI. The default promp
 
 # Sample PDFS
 The sample PDFs include:\
-SampleMath.pdf - 2 Page, 2nd Grade Math\
-SampleHistory.pdf - 1 Page, 11th Grade US History
+sample_math.pdf - 2 Page, 2nd Grade Math\
+sample_history.pdf - 1 Page, 11th Grade US History
 
 # Requirements
 The requirements are also listed in requirements.txt\
